@@ -1,5 +1,6 @@
 #!/usr/bin python2
 
+import argparse
 import requests
 from bs4 import BeautifulSoup
 import pynotify
@@ -11,9 +12,13 @@ def sendmessage(title, message):
     notice.show()
     return
 
-def Main():
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("city", help="Name of the city to display the weather details.")
+    parser.add_argument("-d", "--delay", help="Set the delay for notifications in seconds. By default, it is 60 seconds", type=int, default=60)
+    args = parser.parse_args()
 
-    url = "http://api.openweathermap.org/data/2.5/weather?q=agra&mode=xml&units=metric"
+    url = "http://api.openweathermap.org/data/2.5/weather?q=" + args.city + "&mode=xml&units=metric"
 
     while True:
         r = requests.get(url, timeout=5)
@@ -28,7 +33,7 @@ def Main():
         #print data
 
         sendmessage("Today\'s weather", data)
-        sleep(60)
+        sleep(args.delay)
 
 if __name__ == "__main__":
-    Main()
+    main()
